@@ -1,66 +1,45 @@
 package miinaharava.gui;
 
-import javafx.animation.FadeTransition;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
 import miinaharava.Vakiot;
+import miinaharava.gui.animaatiot.RuutuHaivytys;
 import miinaharava.kontrollerit.RuutuKontrolleri;
 import miinaharava.mallit.Ruutu;
 
 /**
+ * RuutuNakyma toimii yhden Miinaharava-pelin ruudun näkymänä. Ruutua vasemmalla
+ * hiirellää klikkaamalla se pystytään kääntämään. Oikealla hiirellä pystytään
+ * asettamaan tai poistamaan lippu ruudusta.
  *
  * @author Jaakko Ikäheimo
+ *
+ * @version 1.0.0 Komponenti perustoiminnallisuus ja rakenne valmis.
+ * @version 1.1.0 Allokoi mallin ja näkymän hallinta kontrollerille.
+ * @version 1.2.0 Lisää animaatio ruudun kuvan/tilan muutokselle.
  */
 public class RuutuNakyma extends ImageView {
 
-    public Ruutu ruutuMalli;
+    private final Ruutu ruutuMalli;
     private final RuutuKontrolleri kontrolleri;
-    private RuutuSiirtyma ruutuSiirtyma = new RuutuSiirtyma(this);
+    private final RuutuHaivytys animaatio = new RuutuHaivytys(this);
 
     public RuutuNakyma(Ruutu ruutuMalli) {
+        // Asetetaan "tiili" oletuskuvaksi.
         super(Vakiot.TIILI_KUVA);
+
         this.ruutuMalli = ruutuMalli;
 
+        // Allokoidaan kontrollerille näkymän päivitys mallin muutosten perusteella.
         kontrolleri = new RuutuKontrolleri(ruutuMalli, this);
         kontrolleri.alusta();
 
+        // Näytetään häivytysanimaatio kun kuva vaihtuu,.
         imageProperty().addListener((observable) -> {
-            ruutuSiirtyma.siirry();
-        });
-    }
-}
-
-class RuutuSiirtyma {
-
-    public static final double ALKULAPINAKYVYYS = 1;
-    public static final double LOPPULAPINAKYVYYS = 0.8;
-
-    private boolean onkoHaihtuva = false;
-    private final FadeTransition siirtyma;
-
-    public RuutuSiirtyma(RuutuNakyma ruutuNakyma) {
-        siirtyma = new FadeTransition();
-        siirtyma.setNode(ruutuNakyma);
-        siirtyma.setDuration(new Duration(200));
-        siirtyma.setCycleCount(1);
-        siirtyma.setFromValue(ALKULAPINAKYVYYS);
-        siirtyma.setToValue(LOPPULAPINAKYVYYS);
-
-        siirtyma.setOnFinished((event) -> {
-
-            if (onkoHaihtuva) {
-                siirtyma.setFromValue(ALKULAPINAKYVYYS);
-                siirtyma.setToValue(LOPPULAPINAKYVYYS);
-            } else {
-                siirtyma.setFromValue(LOPPULAPINAKYVYYS);
-                siirtyma.setToValue(ALKULAPINAKYVYYS);
-            }
-
-            onkoHaihtuva = !onkoHaihtuva;
+            animaatio.suorita();
         });
     }
 
-    public void siirry() {
-        siirtyma.play();
+    public final Ruutu haeMalli() {
+        return ruutuMalli;
     }
 }

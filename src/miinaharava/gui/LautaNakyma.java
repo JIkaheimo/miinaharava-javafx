@@ -70,7 +70,7 @@ public class LautaNakyma extends Group implements EventHandler<MouseEvent> {
 
         // Haetaan klikatun ruudun malli
         RuutuNakyma klikattuRuutu = (RuutuNakyma) event.getSource();
-        Ruutu ruutuMalli = klikattuRuutu.ruutuMalli;
+        Ruutu ruutuMalli = klikattuRuutu.haeMalli();
 
         // Oikealla hiirellä vaihdetaan lipun tilaa ruudussa.
         if (painettuNappi == MouseButton.SECONDARY) {

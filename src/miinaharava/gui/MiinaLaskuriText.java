@@ -11,6 +11,9 @@ import javafx.scene.text.Font;
  * lukumäärän.
  *
  * @author Jaakko Ikäheimo
+ *
+ * @version 1.0.0 Komponentin perustoiminnallisuus ja rakenne valmis.
+ *
  */
 public class MiinaLaskuriText extends HBox {
 
@@ -20,13 +23,16 @@ public class MiinaLaskuriText extends HBox {
     public MiinaLaskuriText(Image ikoni) {
         super(5);
 
+        // Alustetaan kuvakomponentti.
         miinaKuva = new ImageView(ikoni);
 
+        // Alustetaan tekstikomponentti.
         miinaMaaraTeksti = new Label();
         miinaMaaraTeksti.setFont(Font.font("Verdana", 22));
         miinaMaaraTeksti.setPrefWidth(50);
 
-        super.getChildren().addAll(miinaKuva, miinaMaaraTeksti);
+        super.getChildren()
+                .addAll(miinaKuva, miinaMaaraTeksti);
     }
 
     /**
