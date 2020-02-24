@@ -196,15 +196,15 @@ public class Lauta {
     }
 
     /**
-     * kaantamattomatMiinallisetRuudut() hakee ja palauttaa kaikki laudan
-     * kääntämättömät, miinalliset ruudut.
+     * kaantamattomatLiputtomatMiinallisetRuudut() hakee ja palauttaa kaikki
+     * laudan kääntämättömät, liputtomat, miinalliset ruudut.
      *
      * @return kääntämättömät, miinalliset ruudut.
      */
-    final List<Ruutu> kaantamattomatMiinallisetRuudut() {
+    final List<Ruutu> kaantamattomatLiputtomatMiinallisetRuudut() {
         return ruudut
                 .stream()
-                .filter((ruutu) -> ruutu.onMiinoitettu() && !ruutu.onKaannetty())
+                .filter((ruutu) -> ruutu.onMiinoitettu() && !ruutu.onKaannetty() && !ruutu.onLiputettu())
                 .collect(Collectors.toList());
     }
 

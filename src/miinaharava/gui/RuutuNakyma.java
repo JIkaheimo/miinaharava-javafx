@@ -21,9 +21,6 @@ public class RuutuNakyma extends ImageView {
         super(Vakiot.TIILI_KUVA);
         this.ruutuMalli = ruutuMalli;
 
-        setFitWidth(30);
-        setFitHeight(30);
-
         kontrolleri = new RuutuKontrolleri(ruutuMalli, this);
         kontrolleri.alusta();
 
@@ -35,6 +32,10 @@ public class RuutuNakyma extends ImageView {
 
 class RuutuSiirtyma {
 
+    public static final double ALKULAPINAKYVYYS = 1;
+    public static final double LOPPULAPINAKYVYYS = 0.8;
+
+    private boolean onkoHaihtuva = false;
     private final FadeTransition siirtyma;
 
     public RuutuSiirtyma(RuutuNakyma ruutuNakyma) {
@@ -42,8 +43,21 @@ class RuutuSiirtyma {
         siirtyma.setNode(ruutuNakyma);
         siirtyma.setDuration(new Duration(200));
         siirtyma.setCycleCount(1);
-        siirtyma.setFromValue(1);
-        siirtyma.setToValue(0.7);
+        siirtyma.setFromValue(ALKULAPINAKYVYYS);
+        siirtyma.setToValue(LOPPULAPINAKYVYYS);
+
+        siirtyma.setOnFinished((event) -> {
+
+            if (onkoHaihtuva) {
+                siirtyma.setFromValue(ALKULAPINAKYVYYS);
+                siirtyma.setToValue(LOPPULAPINAKYVYYS);
+            } else {
+                siirtyma.setFromValue(LOPPULAPINAKYVYYS);
+                siirtyma.setToValue(ALKULAPINAKYVYYS);
+            }
+
+            onkoHaihtuva = !onkoHaihtuva;
+        });
     }
 
     public void siirry() {

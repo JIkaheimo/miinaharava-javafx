@@ -15,53 +15,69 @@ import miinaharava.mallit.Ruutu;
  */
 public class LautaNakyma extends Group implements EventHandler<MouseEvent> {
 
+    // Pidetään muistissa pelimalli suoritettavia interaktioita varten.
     private final Peli peliMalli;
 
+    /**
+     * LautaNakyma-luokan konstruktori
+     *
+     * @param peli
+     */
     public LautaNakyma(Peli peli) {
         this.peliMalli = peli;
     }
 
     /**
-     * tyhjenna() tyhjentää pelin graafisen ruudukon.
+     * tyhjenna() tyhjentää ruutunäkymät.
      */
-    public void tyhjenna() {
-        // Poistetaan vaan kaikki lapsinodet.
+    public final void tyhjenna() {
+        // Poistetaan vain kaikki lapsinodet.
         getChildren().removeAll(getChildren());
     }
 
     /**
-     * lisaaRuutu() lisää uuden ruutunäkymän
+     * lisaaRuutu() lisää uuden ruutunäkymän lautanäkymään.
      *
-     * @param ruutu
+     * @param ruutumalli
      * @param rivi
      * @param sarake
      */
-    public void lisaaRuutu(Ruutu ruutu, int rivi, int sarake) {
-        RuutuNakyma ruutuNakyma = new RuutuNakyma(ruutu);
-        ruutuNakyma.setOnMouseClicked(this);
-        ruutuNakyma.setX(sarake * 30 + 5);
-        ruutuNakyma.setY(rivi * 30 + 5);
+    public final void lisaaRuutu(Ruutu ruutumalli, int rivi, int sarake) {
 
-        getChildren().add(ruutuNakyma);
+        // Luodaan uusi ruutunäkymä.
+        RuutuNakyma ruutunakyma = new RuutuNakyma(ruutumalli);
+
+        // Allokoidaan klikkauskäsittely tälle komponentille.
+        ruutunakyma.setOnMouseClicked(this);
+
+        // Asetetaan ruudun sijainti.
+        ruutunakyma.setX(sarake * 30 + 5);
+        ruutunakyma.setY(rivi * 30 + 5);
+
+        // Lisätään ruutunäkymä komponentin lapseksi.
+        getChildren().add(ruutunakyma);
     }
 
     /**
-     * Tällä hoidetaan ruutumallien päivitys klikatun ruudun perusteella.
+     * Käsittelijä ruutunäkymissä tapahtuville klikkaustapahtumille.
      *
-     * @param event
+     * @param event metadaa klikkaustapahtumasta.
      */
     @Override
-    public void handle(MouseEvent event) {
+    public final void handle(MouseEvent event) {
+        // Haetaan klikattu nappi.
         MouseButton painettuNappi = event.getButton();
 
         // Haetaan klikatun ruudun malli
         RuutuNakyma klikattuRuutu = (RuutuNakyma) event.getSource();
         Ruutu ruutuMalli = klikattuRuutu.ruutuMalli;
 
+        // Oikealla hiirellä vaihdetaan lipun tilaa ruudussa.
         if (painettuNappi == MouseButton.SECONDARY) {
             peliMalli.vaihdaLippuaRuudussa(ruutuMalli);
 
-        } else if (painettuNappi == MouseButton.PRIMARY) {
+        } // Vasemmalla hiirellä käännetään ruutu.
+        else if (painettuNappi == MouseButton.PRIMARY) {
             peliMalli.kaannaRuutu(ruutuMalli);
         }
     }

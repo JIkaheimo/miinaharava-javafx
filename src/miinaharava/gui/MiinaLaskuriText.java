@@ -7,15 +7,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
 /**
+ * MiinaLaskuriText näyttää Miinaharava-pelin jäljellä olevien miinojen
+ * lukumäärän.
  *
  * @author Jaakko Ikäheimo
  */
-public class MiinaText extends HBox {
+public class MiinaLaskuriText extends HBox {
 
     private final Label miinaMaaraTeksti;
     private final ImageView miinaKuva;
 
-    public MiinaText(Image ikoni) {
+    public MiinaLaskuriText(Image ikoni) {
         super(5);
 
         miinaKuva = new ImageView(ikoni);
@@ -27,6 +29,12 @@ public class MiinaText extends HBox {
         super.getChildren().addAll(miinaKuva, miinaMaaraTeksti);
     }
 
+    /**
+     * asetaMiinojenMaara() päivittää Miinaharava-pelin jäljellä olevan miinojen
+     * määrän näkyville.
+     *
+     * @param miinojenMaara
+     */
     public void asetaMiinojenMaara(int miinojenMaara) {
         miinaMaaraTeksti.setText(String.format("%d", miinojenMaara));
     }

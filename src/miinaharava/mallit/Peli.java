@@ -94,11 +94,12 @@ public class Peli {
      * uusiPeli() aloittaa uuden pelin alustamalla pelilaudan ja muuttujat.
      */
     public final void uusiPeli() {
-        lauta.alusta(vaikeustaso.rivienLkm, vaikeustaso.sarakkeidenLkm, vaikeustaso.miinojenLkm);
         this.peliHavitty.set(false);
         this.peliVoitettu.set(false);
 
         this.miinojaJaljella.set(vaikeustaso.miinojenLkm);
+
+        lauta.alusta(vaikeustaso.rivienLkm, vaikeustaso.sarakkeidenLkm, vaikeustaso.miinojenLkm);
     }
 
     /**
@@ -220,18 +221,19 @@ public class Peli {
     }
 
     /**
-     * kaannaMiinat() kääntää kaikki ruudut missä on miina.
+     * kaannaMiinat() kääntää kaikki ruudut missä on miina ja ei lippua.
      */
     private void kaannaMiinat() {
-        lauta.kaantamattomatMiinallisetRuudut()
+        lauta.kaantamattomatLiputtomatMiinallisetRuudut()
                 .forEach((ruutu) -> ruutu.kaanna());
     }
 
     /**
-     * liputaMiinat() asettaa lipun kaikkiin ruutuihin missä on miina.
+     * liputaMiinat() asettaa lipun kaikkiin ruutuihin missä on miina ja ei
+     * lippua.
      */
     private void liputaMiinat() {
-        lauta.kaantamattomatMiinallisetRuudut()
+        lauta.kaantamattomatLiputtomatMiinallisetRuudut()
                 .forEach((ruutu) -> ruutu.asetaLippu());
     }
 

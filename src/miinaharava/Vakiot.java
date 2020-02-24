@@ -7,6 +7,9 @@ import miinaharava.mallit.Vaikeustaso;
  * Miinaharava-pelin vakiot koottuna yhteen paikkaan.
  *
  * @author Jaakko Ikäheimo
+ *
+ * @version 1.0.0 Vaikeustasot ja tiilikuvat lisätty.
+ * @version 1.1.0 Loput kuvat lisätty.
  */
 public abstract class Vakiot {
 

@@ -1,11 +1,12 @@
 /**
  * Pelin assetit/grafiikat: https://itch.io
- * Apuja: https://en.wikipedia.org/wiki/Microsoft_Minesweeper
  */
 package miinaharava;
 
 import java.util.Optional;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -17,7 +18,7 @@ import javafx.stage.Stage;
 import miinaharava.gui.*;
 import miinaharava.mallit.*;
 
-public class Miinaharava extends Application {
+public class Miinaharava extends Application implements ChangeListener<Boolean> {
 
     private final Peli peli = new Peli(Vakiot.VAIKEUSTASOT[0]);
     private AjastinText ajastinTeksti;
@@ -33,14 +34,15 @@ public class Miinaharava extends Application {
      * perusteella.
      */
     private void paivitaRuudukko() {
-        // Tyhjennetään ruudukko
-        ruudukko.tyhjenna();
-
         Lauta lauta = peli.haeLauta();
 
         int rivi = 0;
         int sarake = 0;
 
+        // Tyhjennetään ruudukko.
+        ruudukko.tyhjenna();
+
+        // Lisätään ruudut ruudukkoon.
         for (Ruutu ruutu : lauta.haeRuudut()) {
             ruudukko.lisaaRuutu(ruutu, rivi, sarake);
             sarake += 1;
@@ -56,27 +58,6 @@ public class Miinaharava extends Application {
 
         VBox asettelu = new VBox();
         ValikkoMenuBar valikko = alustaValikko();
-        peli.peliVoitettuProp().addListener((o, v, onkoVoitettu) -> {
-
-            if (!onkoVoitettu) {
-                return;
-            }
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Voitit pelin! Haluatko pelata uudestaan?", ButtonType.YES, ButtonType.NO);
-        });
-
-        peli.peliHavittyProp().addListener((o, v, onkoHavitty) -> {
-
-            if (!onkoHavitty) {
-                return;
-            }
-            ajastinTeksti.pysayta();
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Hävisit pelin! :( Haluatko pelata uudestaan?", ButtonType.YES, ButtonType.NO);
-            Optional<ButtonType> valinta = alert.showAndWait();
-
-            if (valinta.isPresent() && valinta.get() == ButtonType.YES) {
-                nollaaTila();
-            }
-        });
 
         // Luodaan tässä pelin ylävalikko ja alustetaan sen toiminnot
         // Luodaan pelin yläpalkki
@@ -87,7 +68,7 @@ public class Miinaharava extends Application {
         ajastinTeksti.aloita();
 
         // Luodaan miinateksti
-        MiinaText miinaTeksti = new MiinaText(Vakiot.MIINA_KUVA);
+        MiinaLaskuriText miinaTeksti = new MiinaLaskuriText(Vakiot.MIINA_KUVA);
 
         // Päivitetään teksti miinojen määrän muuttuessa.
         peli.miinojaJaljellaProp()
@@ -102,7 +83,6 @@ public class Miinaharava extends Application {
 
         HBox ruudukkoAsettelu = new HBox(ruudukko);
         ruudukkoAsettelu.setAlignment(Pos.CENTER);
-        paivitaRuudukko();
 
         asettelu.getChildren().addAll(valikko, ylapalkki, ruudukkoAsettelu);
         asettelu.setSpacing(20);
@@ -110,8 +90,12 @@ public class Miinaharava extends Application {
         Scene nakyma = new Scene(asettelu, 1000, 600);
         nakyma.setFill(Color.STEELBLUE);
 
+        peli.peliVoitettuProp().addListener(this);
+        peli.peliHavittyProp().addListener(this);
+
+        nollaaTila();
+
         ikkuna.setScene(nakyma);
-        ikkuna.setResizable(false);
         ikkuna.show();
     }
 
@@ -141,6 +125,38 @@ public class Miinaharava extends Application {
         ajastinTeksti.nollaa();
         peli.uusiPeli();
         paivitaRuudukko();
+        ajastinTeksti.aloita();
+    }
+
+    /**
+     * Hoidetaan pelin voitto- ja häviötila.
+     *
+     * @param seurattu
+     * @param vanhaTila
+     * @param uusiTila
+     */
+    @Override
+    public void changed(ObservableValue<? extends Boolean> seurattu, Boolean vanhaTila, Boolean uusiTila) {
+        Alert ilmoitus;
+
+        if (!uusiTila) {
+            return;
+        }
+
+        if (seurattu.equals(peli.peliVoitettuProp())) {
+            ilmoitus = new Alert(Alert.AlertType.INFORMATION, "Voitit pelin! Haluatko pelata uudestaan?", ButtonType.YES, ButtonType.NO);
+        } else if (seurattu.equals(peli.peliHavittyProp())) {
+            ilmoitus = new HavioAlert();
+        } else {
+            throw new Error("Jokin meni vikaan...");
+        }
+
+        ajastinTeksti.pysayta();
+        Optional<ButtonType> valinta = ilmoitus.showAndWait();
+
+        if (valinta.isPresent() && valinta.get() == ButtonType.YES) {
+            nollaaTila();
+        }
     }
 
     /**
@@ -150,6 +166,29 @@ public class Miinaharava extends Application {
      */
     public static void main(String[] argumentit) {
         launch(argumentit);
+    }
+
+}
+
+class HavioAlert extends Alert {
+
+    public HavioAlert() {
+        super(AlertType.CONFIRMATION);
+        setHeaderText("Hävisit pelin!");
+        setContentText("Haluatko pelata uudestaan?");
+        getButtonTypes().clear();
+        getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+    }
+}
+
+class VoittoAlert extends Alert {
+
+    public VoittoAlert() {
+        super(AlertType.CONFIRMATION);
+        setHeaderText("Voitit pelin!");
+        setContentText("Haluatko pelata uudestaan?");
+        getButtonTypes().clear();
+        getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
     }
 
 }
