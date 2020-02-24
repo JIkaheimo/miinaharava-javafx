@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import miinaharava.mallit.Vaikeustaso;
 
 /**
- * Miinaharava-pelin vakiot
+ * Miinaharava-pelin vakiot koottuna yhteen paikkaan.
  *
  * @author Jaakko Ikäheimo
  */

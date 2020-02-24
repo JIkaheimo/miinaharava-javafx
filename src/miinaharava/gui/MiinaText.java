@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package miinaharava.gui;
 
 import javafx.scene.control.Label;
@@ -13,25 +8,26 @@ import javafx.scene.text.Font;
 
 /**
  *
- * @author J4sK4
+ * @author Jaakko Ikäheimo
  */
 public class MiinaText extends HBox {
 
-    private final Label miinaLabel;
-    private final ImageView miinaImageView;
+    private final Label miinaMaaraTeksti;
+    private final ImageView miinaKuva;
 
     public MiinaText(Image ikoni) {
         super(5);
-        miinaImageView = new ImageView(ikoni);
 
-        miinaLabel = new Label();
-        miinaLabel.setFont(Font.font("Verdana", 22));
-        miinaLabel.setPrefWidth(50);
+        miinaKuva = new ImageView(ikoni);
 
-        super.getChildren().addAll(miinaImageView, miinaLabel);
+        miinaMaaraTeksti = new Label();
+        miinaMaaraTeksti.setFont(Font.font("Verdana", 22));
+        miinaMaaraTeksti.setPrefWidth(50);
+
+        super.getChildren().addAll(miinaKuva, miinaMaaraTeksti);
     }
 
     public void asetaMiinojenMaara(int miinojenMaara) {
-        miinaLabel.setText(String.format("%d", miinojenMaara));
+        miinaMaaraTeksti.setText(String.format("%d", miinojenMaara));
     }
 }

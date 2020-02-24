@@ -1,11 +1,6 @@
 package miinaharava.mallit;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 
 /**
  * Peli tarjoaa rajapinnan Miinaharava-pelille.
@@ -14,25 +9,29 @@ import javafx.beans.property.SimpleIntegerProperty;
  * <ul>
  * <li>uusi peli
  * <li>käännä ruutu
- * <li>aseta lippu ruutuun
- * <li>poista lippu
+ * <li>lipun asetus/poisto ruudusta
  * </ul>
  *
  * @author Jaakko Ikäheimo
  *
- *
+ * @version 1.0.0 Pelin perustoiminnallisuus ja rakenne valmis.
+ * @version 1.1.0 Siirrä Lauta-luokalta pelilogiikka Peli-luokkaan.
+ * @version 1.2.0 Lisää propertyt pelin tilan seuraamiseksi.
  */
 public class Peli {
 
-    // Pelin olioattribuuutit.
     private Vaikeustaso vaikeustaso;
+
     private final Lauta lauta = new Lauta();
 
-    private IntegerProperty miinojaJaljella = new SimpleIntegerProperty(0);
+    private final BooleanProperty peliHavitty
+            = new SimpleBooleanProperty(false);
 
-    // Pelin tila-attribuutit.
-    private final BooleanProperty peliHavitty = new SimpleBooleanProperty(false);
-    private final BooleanProperty peliVoitettu = new SimpleBooleanProperty(false);
+    private final BooleanProperty peliVoitettu
+            = new SimpleBooleanProperty(false);
+
+    private final IntegerProperty miinojaJaljella
+            = new SimpleIntegerProperty(0);
 
     /**
      * Pelin konstruktori
@@ -44,17 +43,42 @@ public class Peli {
     }
 
     /**
-     * asetaVaikeustaso() asettaa pelin vaikeustason ja aloittaa uuden pelin.
+     * peliVoitettuProp() palauttaa luettavan propertyn, millä pystytään
+     * seuraamaan onko peli voitettu.
+     *
+     * @return pelin voiton tilan property.
+     */
+    public final ReadOnlyBooleanProperty peliVoitettuProp() {
+        return peliVoitettu;
+    }
+
+    /**
+     * peliHavittyProp() palauttaa luettavan propertyn, millä pysytään
+     * seuraamaan onko peli hävitty.
+     *
+     * @return pelin häviön tilan propery.
+     */
+    public final ReadOnlyBooleanProperty peliHavittyProp() {
+        return peliHavitty;
+    }
+
+    /**
+     * miinojaJaljellaProp() palauttaa laudan miinojen - lippujen lukumäärän
+     * propertyn.
+     *
+     * @return
+     */
+    public final ReadOnlyIntegerProperty miinojaJaljellaProp() {
+        return miinojaJaljella;
+    }
+
+    /**
+     * asetaVaikeustaso() asettaa pelin vaikeustason.
      *
      * @param vaikeustaso
      */
     public final void asetaVaikeustaso(Vaikeustaso vaikeustaso) {
         this.vaikeustaso = vaikeustaso;
-        uusiPeli();
-    }
-
-    public ReadOnlyIntegerProperty miinojaJaljellaProp() {
-        return miinojaJaljella;
     }
 
     /**
@@ -62,16 +86,15 @@ public class Peli {
      *
      * @return pelin lauta
      */
-    public Lauta haeLauta() {
+    public final Lauta haeLauta() {
         return lauta;
     }
 
     /**
      * uusiPeli() aloittaa uuden pelin alustamalla pelilaudan ja muuttujat.
      */
-    public void uusiPeli() {
+    public final void uusiPeli() {
         lauta.alusta(vaikeustaso.rivienLkm, vaikeustaso.sarakkeidenLkm, vaikeustaso.miinojenLkm);
-
         this.peliHavitty.set(false);
         this.peliVoitettu.set(false);
 
@@ -84,10 +107,10 @@ public class Peli {
      *
      * @param kaannettavaRuutu
      */
-    public void kaannaRuutu(Ruutu kaannettavaRuutu) {
+    public final void kaannaRuutu(Ruutu kaannettavaRuutu) {
 
         // Tarkistetaan onko ruutu käännettävissä ja pelin tila.
-        if (peliLoppunut() || !kaannettavaRuutu.onKaannettavissa()) {
+        if (onkoLoppunut() || !kaannettavaRuutu.onKaannettavissa()) {
             return;
         }
 
@@ -100,7 +123,8 @@ public class Peli {
     }
 
     /**
-     * Kääntää annetussa koordinaatissa olevan ruudun pelilaudalla.
+     * Kääntää annetussa koordinaatissa sijaitsevan ruudun pelilaudalla. Jos
+     * ruutu ei sijaitse laudalla, mitään ei tapahdu.
      *
      * @param rivi
      * @param sarake
@@ -152,7 +176,7 @@ public class Peli {
      *
      * @param ruutu mihin lippu ollaan vaihtamassa
      */
-    public void vaihdaLippuaRuudussa(Ruutu ruutu) {
+    public final void vaihdaLippuaRuudussa(Ruutu ruutu) {
 
         // Tarkistetaan pystyykö lipun tilaa vaihtamaan.
         if (!ruutu.lippuVoidaanVaihtaa()) {
@@ -161,42 +185,54 @@ public class Peli {
 
         // Vaihdetaan lipun tilaa.
         if (ruutu.onLiputettu()) {
-            ruutu.poistaLippu();
+            poistaLippu(ruutu);
         } else {
-            ruutu.asetaLippu();
+            asetaLippu(ruutu);
         }
     }
 
     /**
+     * poistaLippu(Ruutu ruutu) poistaa lipun annetusta ruudusta. Jos lippua ei
+     * ole ruudussa tai peli ei ole käynnissä niin mitään ei tapahdu.
      *
-     * @return
+     * @param ruutu josta lippu poistetaan.
      */
-    public ReadOnlyBooleanProperty peliVoitettuProperty() {
-        return peliVoitettu;
-    }
-
-    public ReadOnlyBooleanProperty peliHavittyProperty() {
-        return peliHavitty;
+    private void poistaLippu(Ruutu ruutu) {
+        if (onkoLoppunut() || !ruutu.onLiputettu()) {
+            return;
+        }
+        ruutu.poistaLippu();
+        miinojaJaljella.set(miinojaJaljella.get() + 1);
     }
 
     /**
-     * kaannaMiinat() kääntää kaikki ruudut, jossa on miina.
+     * asetaLippu asettaa lipun annettuun ruutuun. Jos lippu on jo asetettu tai
+     * peli ei ole käynnissä niin mitään ei tapahdu.
+     *
+     * @param ruutu mihin lippu asetetaan.
+     */
+    private void asetaLippu(Ruutu ruutu) {
+        if (onkoLoppunut() || ruutu.onLiputettu()) {
+            return;
+        }
+        ruutu.asetaLippu();
+        miinojaJaljella.set(miinojaJaljella.get() - 1);
+    }
+
+    /**
+     * kaannaMiinat() kääntää kaikki ruudut missä on miina.
      */
     private void kaannaMiinat() {
-        lauta.ruudut
-                .stream()
-                .filter((ruutu) -> (ruutu.onMiinoitettu()) && !(ruutu.onKaannetty()))
+        lauta.kaantamattomatMiinallisetRuudut()
                 .forEach((ruutu) -> ruutu.kaanna());
     }
 
     /**
-     * kaannaMiinat() kääntää kaikki laudan ruudut.
+     * liputaMiinat() asettaa lipun kaikkiin ruutuihin missä on miina.
      */
-    private void kaannaRuudut() {
-        lauta.ruudut
-                .stream()
-                .filter((ruutu) -> !ruutu.onKaannetty())
-                .forEach((ruutu) -> ruutu.kaanna());
+    private void liputaMiinat() {
+        lauta.kaantamattomatMiinallisetRuudut()
+                .forEach((ruutu) -> ruutu.asetaLippu());
     }
 
     /**
@@ -205,61 +241,37 @@ public class Peli {
      *
      * @return onko peli voitettu
      */
-    public boolean onkoVoitettu() {
+    public final boolean onkoVoitettu() {
         // Haetaan käännettyjen, miinoittamattomien ruutujen lukumäärä
-        long kaannettyjaMiinoittamattomia
-                = lauta.ruudut
-                        .stream()
-                        .filter(ruutu -> !ruutu.onMiinoitettu() && ruutu.onKaannetty())
-                        .count();
+        int kaannettyjaMiinoittamattomia
+                = lauta.kaannetytMiinattomatRuudut().size();
 
         return (lauta.ruutumaara() - vaikeustaso.miinojenLkm) == kaannettyjaMiinoittamattomia;
     }
 
-    void haviaPeli() {
+    /**
+     * haviaPeli() suorittaa pelin häviön yhteydessä tehtävät toimenpiteet.
+     */
+    private void haviaPeli() {
         kaannaMiinat();
         peliHavitty.set(true);
     }
 
-    void voitaPeli() {
-        kaannaRuudut();
+    /**
+     * voitaPeli() suorittaa pelin voiton yhteydessä tehtävät toimenpiteet.
+     */
+    private void voitaPeli() {
+        liputaMiinat();
         peliVoitettu.set(true);
     }
 
     /**
-     * peliLoppunut() palauttaa tiedon siitä onko peli loppunut.
+     * onkoLoppunut() palauttaa tiedon siitä onko peli loppunut.
      *
      * @return onko peli loppunut.
      */
-    public boolean peliLoppunut() {
-        return onkoVoitettu() || peliHavitty.get();
+    public final boolean onkoLoppunut() {
+        return peliVoitettu.get() || peliHavitty.get();
     }
 
-    /**
-     * poistaLippu(Ruutu ruutu) poistaa lipun annetusta ruudusta. Jos lippua ei
-     * ole ruudussa niin mitään ei tapahdu.
-     *
-     * @param ruutu josta lippu poistetaan.
-     */
-    void poistaLippu(Ruutu ruutu) {
-        if (!ruutu.onLiputettu()) {
-            return;
-        }
-        ruutu.poistaLippu();
-        miinojaJaljella.set(miinojaJaljella.get() + 1);
-    }
-
-    /**
-     * asetaLippu asettaa lipun annettuun ruutuun. Jos lippu on jo asetettu
-     * mitään ei tapahdu.
-     *
-     * @param ruutu mihin lippu asetetaan.
-     */
-    void asetaLippu(Ruutu ruutu) {
-        if (ruutu.onLiputettu()) {
-            return;
-        }
-        ruutu.asetaLippu();
-        miinojaJaljella.set(miinojaJaljella.get() - 1);
-    }
 }

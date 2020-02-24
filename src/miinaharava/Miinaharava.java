@@ -1,7 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Pelin assetit/grafiikat: https://itch.io
+ * Apuja: https://en.wikipedia.org/wiki/Microsoft_Minesweeper
  */
 package miinaharava;
 
@@ -22,7 +21,7 @@ public class Miinaharava extends Application {
 
     private final Peli peli = new Peli(Vakiot.VAIKEUSTASOT[0]);
     private AjastinText ajastinTeksti;
-    private RuudukkoGroup ruudukko;
+    private LautaNakyma ruudukko;
 
     private void asetaVaikeustaso(Vaikeustaso vaikeustaso) {
         peli.asetaVaikeustaso(vaikeustaso);
@@ -57,16 +56,17 @@ public class Miinaharava extends Application {
 
         VBox asettelu = new VBox();
         ValikkoMenuBar valikko = alustaValikko();
-        peli.peliVoitettuProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == false) {
+        peli.peliVoitettuProp().addListener((o, v, onkoVoitettu) -> {
+
+            if (!onkoVoitettu) {
                 return;
             }
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Voitit pelin! Haluatko pelata uudestaan?", ButtonType.YES, ButtonType.NO);
         });
 
-        peli.peliHavittyProperty().addListener((observable, oldValue, newValue) -> {
+        peli.peliHavittyProp().addListener((o, v, onkoHavitty) -> {
 
-            if (newValue == false) {
+            if (!onkoHavitty) {
                 return;
             }
             ajastinTeksti.pysayta();
@@ -98,7 +98,7 @@ public class Miinaharava extends Application {
         ylapalkki.getChildren().addAll(ajastinTeksti, miinaTeksti);
         ylapalkki.setAlignment(Pos.CENTER);
 
-        ruudukko = new RuudukkoGroup(peli);
+        ruudukko = new LautaNakyma(peli);
 
         HBox ruudukkoAsettelu = new HBox(ruudukko);
         ruudukkoAsettelu.setAlignment(Pos.CENTER);

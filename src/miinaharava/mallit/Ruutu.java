@@ -33,7 +33,7 @@ public class Ruutu {
      * asetettu. Virhetilanteen voi välttää tarkistamalla onko ruutu jo
      * miinoitettu onMiinoitetu()-metodilla.
      */
-    void asetaMiina() {
+    final void asetaMiina() {
         if (ruutuMiinoitettu) {
             throw new Error("Ruutu:asetaMiina, Miina on jo asetettu!");
         }
@@ -46,7 +46,7 @@ public class Ruutu {
      *
      * @return onko ruutu miinoitettu
      */
-    public boolean onMiinoitettu() {
+    public final boolean onMiinoitettu() {
         return ruutuMiinoitettu;
     }
 
@@ -56,7 +56,7 @@ public class Ruutu {
      *
      * @param miinojenLkm naapuriruutujen miinojen lukumäärä
      */
-    void asetaNaapuriMiinojenLkm(int miinojenLkm) {
+    final void asetaNaapuriMiinojenLkm(int miinojenLkm) {
         naapuriMiinojenLkm = miinojenLkm;
     }
 
@@ -66,7 +66,7 @@ public class Ruutu {
      *
      * @return naapurissa sijaitsevien miinojen lukumäärä
      */
-    public int naapuriMiinojenLkm() {
+    public final int naapuriMiinojenLkm() {
         return naapuriMiinojenLkm;
     }
 
@@ -75,7 +75,7 @@ public class Ruutu {
      * liputettua ruutua yritetään kääntää. Käännön oikeellisuus voidaan testata
      * onKaannettavissa()-metodilla.
      */
-    void kaanna() {
+    final void kaanna() {
         if (!onKaannettavissa()) {
             throw new Error("Ruutu:kaanna, Ruutua ei pystytä kääntämään!");
         }
@@ -87,7 +87,7 @@ public class Ruutu {
      *
      * @return onko ruutu käännetty
      */
-    public boolean onKaannetty() {
+    public final boolean onKaannetty() {
         return ruutuKaannetty.get();
     }
 
@@ -97,7 +97,7 @@ public class Ruutu {
      *
      * @return ruudun käännön tilan property
      */
-    public ReadOnlyBooleanProperty ruutuKaannettyProp() {
+    public final ReadOnlyBooleanProperty ruutuKaannettyProp() {
         return ruutuKaannetty;
     }
 
@@ -106,7 +106,7 @@ public class Ruutu {
      * asettaa jo liputettuun tai käännettyyn ruutuun. Oikeellisuus voidaan
      * testata onKaannetty() ja lippuVoidaanVaihtaa()-metodeilla
      */
-    void asetaLippu() {
+    final void asetaLippu() {
         if (onLiputettu()) {
             throw new Error("Ruutu:asetaLippu, Ruutuun on jo asetettu lippu!");
         } else if (onKaannetty()) {
@@ -121,7 +121,7 @@ public class Ruutu {
      * Oikeellisuus voidaan testata onKaannetty() ja
      * lippuVoidaanVaihtaa()-metodeilla
      */
-    void poistaLippu() {
+    final void poistaLippu() {
         if (!onLiputettu()) {
             throw new Error("Ruutu:poistaLippu, Liputtamattomasta ruudusta ei voida poistaa lippua!");
         } else if (onKaannetty()) {
@@ -136,7 +136,7 @@ public class Ruutu {
      *
      * @return onko ruutu liputettu
      */
-    public boolean onLiputettu() {
+    public final boolean onLiputettu() {
         return ruutuLiputettu.get();
     }
 
@@ -146,7 +146,7 @@ public class Ruutu {
      *
      * @return ruudun liputuksen tilan property
      */
-    public ReadOnlyBooleanProperty ruutuLiputettuProp() {
+    public final ReadOnlyBooleanProperty ruutuLiputettuProp() {
         return ruutuLiputettu;
     }
 
@@ -156,7 +156,7 @@ public class Ruutu {
      *
      * @return ruudun käännettävyyden tila
      */
-    public boolean onKaannettavissa() {
+    public final boolean onKaannettavissa() {
         return !onLiputettu() && !onKaannetty();
     }
 
@@ -166,7 +166,7 @@ public class Ruutu {
      *
      * @return voidaanko lippu vaihtaa
      */
-    boolean lippuVoidaanVaihtaa() {
+    final boolean lippuVoidaanVaihtaa() {
         return !onKaannetty();
     }
 
@@ -175,7 +175,7 @@ public class Ruutu {
      *
      * @return onko naapurissa miinoja
      */
-    boolean miinojaNaapurissa() {
+    final boolean miinojaNaapurissa() {
         return naapuriMiinojenLkm > 0;
     }
 }
