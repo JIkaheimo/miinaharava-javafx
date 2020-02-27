@@ -34,6 +34,7 @@ public class RuutuHaivytys {
         // Alustetaan FadeTransition.
         siirtyma.setDuration(new Duration(400));
         siirtyma.setCycleCount(1);
+
         siirtyma.setFromValue(ALKULAPINAKYVYYS);
         siirtyma.setToValue(LOPPULAPINAKYVYYS);
 

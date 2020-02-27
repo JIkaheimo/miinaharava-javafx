@@ -34,8 +34,10 @@ public class RuutuNakyma extends ImageView {
         kontrolleri.alusta();
 
         // Näytetään häivytysanimaatio kun kuva vaihtuu,.
-        imageProperty().addListener((observable) -> {
-            animaatio.suorita();
+        imageProperty().addListener((observable, vanhaKuva, uusiKuva) -> {
+            if (uusiKuva != Vakiot.LIPPU_KUVA && uusiKuva != Vakiot.TIILI_KUVA) {
+                animaatio.suorita();
+            }
         });
     }
 

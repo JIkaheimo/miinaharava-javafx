@@ -6,6 +6,7 @@
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/gui/ValikkoMenuBar.java</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/mallit/Peli.java</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/Vakiot.java</file>
+            <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/assets/2.png</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/mallit/Ruutu.java</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/Miinaharava.java</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/gui/RuutuNakyma.java</file>
@@ -16,9 +17,13 @@
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/assets/bomb.png</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/kontrollerit/RuutuKontrolleri.java</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/mallit/Lauta.java</file>
+            <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/assets/8.png</file>
+            <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/assets/5.png</file>
+            <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/assets/3.png</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/assets/flag.png</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/assets/tile.png</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/assets/1.png</file>
+            <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/assets/6.png</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/gui/MiinaLaskuriText.java</file>
             <file>file:/D:/Ohjelmointi/Java/Miinaharava/src/miinaharava/gui/LautaNakyma.java</file>
         </group>
